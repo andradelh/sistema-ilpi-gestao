@@ -19,7 +19,7 @@ function App() {
 
   const carregarDados = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/residentes');
+      const res = await axios.get('https://api-sistema-ilpi.onrender.com/residentes');
       setLista(res.data);
     } catch (err) { console.error("Erro ao buscar dados"); }
   };
@@ -65,9 +65,9 @@ function App() {
 
     try {
       if (editandoId) {
-        await axios.put(`http://localhost:3001/residentes/${editandoId}`, dadosParaEnviar);
+        await axios.put(`https://api-sistema-ilpi.onrender.com/residentes/${editandoId}`, dadosParaEnviar);
       } else {
-        await axios.post('http://localhost:3001/residentes', dadosParaEnviar);
+        await axios.post('https://api-sistema-ilpi.onrender.com/residentes', dadosParaEnviar);
       }
       setForm(initialFormState);
       setEditandoId(null);
@@ -77,7 +77,7 @@ function App() {
 
   const deletar = async (id) => {
     if (window.confirm("Deseja realmente excluir?")) {
-      await axios.delete(`http://localhost:3001/residentes/${id}`);
+      await axios.delete(`https://api-sistema-ilpi.onrender.com/residentes/${id}`);
       carregarDados();
     }
   };
@@ -100,7 +100,7 @@ function App() {
   const abrirProntuario = async (residente) => {
     setResidenteSelecionado(residente);
     try {
-      const res = await axios.get(`http://localhost:3001/evolucoes/${residente.id}`);
+      const res = await axios.get(`https://api-sistema-ilpi.onrender.com/evolucoes/${residente.id}`);
       setHistorico(res.data);
     } catch (err) {
       console.error("Erro ao carregar histórico");
@@ -111,7 +111,7 @@ function App() {
   const salvarEvolucao = async () => {
     if (!novaNota.texto.trim()) return alert("Digite o relatório antes de salvar.");
     try {
-      await axios.post('http://localhost:3001/evolucoes', {
+      await axios.post('https://api-sistema-ilpi.onrender.com/evolucoes', {
         residente_id: residenteSelecionado.id,
         profissional: novaNota.profissional,
         texto: novaNota.texto
