@@ -53,15 +53,30 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dadosParaEnviar = {
-      nome: form.nome,
-      nascimento: form.nascimento,
-      admissao: form.admissao,
-      contato_emergencia: form.emergencia,
-      cep: form.cep,
-      endereco_rua: form.endereco,
-      numero_casa: form.numero,
-      anotacoes: form.anotacoes
-    };
+    nome: form.nome,
+    nascimento: form.nascimento,
+    admissao: form.admissao,
+    emergencia: form.emergencia, // Antes estava contato_emergencia
+    cep: form.cep,
+    endereco: form.endereco,      // Antes estava endereco_rua
+    numero: form.numero,          // Antes estava numero_casa
+    anotacoes: form.anotacoes
+  };
+
+  try {
+    if (editandoId) {
+      await axios.put(`https://api-sistema-ilpi.onrender.com/residentes/${editandoId}`, dadosParaEnviar);
+    } else {
+      await axios.post('https://api-sistema-ilpi.onrender.com/residentes', dadosParaEnviar);
+    }
+    setForm(initialFormState);
+    setEditandoId(null);
+    carregarDados();
+  } catch (err) { 
+    alert('Erro ao salvar'); 
+    console.error(err.response?.data); // Isso ajuda a ver o erro real no console (F12)
+  }
+};
 
     try {
       if (editandoId) {
@@ -97,16 +112,17 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  const abrirProntuario = async (residente) => {
-    setResidenteSelecionado(residente);
-    try {
-      const res = await axios.get(`https://api-sistema-ilpi.onrender.com/residentes/${residente.id}`);
-      setHistorico(res.data);
-    } catch (err) {
-      console.error("Erro ao carregar histórico");
-      setHistorico([]);
-    }
-  };
+const abrirProntuario = async (residente) => {
+  setResidenteSelecionado(residente);
+  try {
+    // Mude de /residentes/ para /evolucoes/
+    const res = await axios.get(`https://api-sistema-ilpi.onrender.com/evolucoes/${residente.id}`);
+    setHistorico(res.data);
+  } catch (err) {
+    console.error("Erro ao carregar histórico");
+    setHistorico([]);
+  }
+};
 
   const salvarEvolucao = async () => {
     if (!novaNota.texto.trim()) return alert("Digite o relatório antes de salvar.");
