@@ -113,28 +113,30 @@ function App() {
   };
 
 const abrirProntuario = async (residente) => {
-  setResidenteSelecionado(residente);
-  try {
-    // Mude de /residentes/ para /evolucoes/
-    const res = await axios.get(`https://api-sistema-ilpi.onrender.com/evolucoes/${residente.id}`);
-    setHistorico(res.data);
-  } catch (err) {
-    console.error("Erro ao carregar histórico");
-    setHistorico([]);
-  }
-};
+    setResidenteSelecionado(residente);
+    try {
+      // Rota correta para evoluções
+      const res = await axios.get(`https://api-sistema-ilpi.onrender.com/evolucoes/${residente.id}`);
+      setHistorico(res.data);
+    } catch (err) {
+      console.error("Erro ao carregar histórico");
+      setHistorico([]);
+    }
+  };
 
-  const salvarEvolucao = async () => {
+  const salvarEvolucao = async () => { // O 'async' precisa estar aqui
     if (!novaNota.texto.trim()) return alert("Digite o relatório antes de salvar.");
     try {
       await axios.post('https://api-sistema-ilpi.onrender.com/evolucoes', {
         residente_id: residenteSelecionado.id,
-        profissional: novaNota.profissional,
+        professional: novaNota.profissional,
         texto: novaNota.texto
       });
       setNovaNota({ ...novaNota, texto: '' });
-      abrirProntuario(residenteSelecionado);
+      abrirProntuario(residenteSelecionado); // Recarrega a lista após salvar
+      alert("Evolução registrada!");
     } catch (err) {
+      console.error(err);
       alert("Erro ao salvar no banco");
     }
   };
