@@ -1,6 +1,9 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+app.use(cors({
+    origin: 'https://sistema-ilpi-app.onrender.com' // Sua URL do frontend
+}));
 
 const app = express();
 app.use(cors());
