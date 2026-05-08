@@ -124,17 +124,17 @@ const abrirProntuario = async (residente) => {
     }
   };
 
-  const salvarEvolucao = async () => { // O 'async' precisa estar aqui
+  const salvarEvolucao = async () => { 
     if (!novaNota.texto.trim()) return alert("Digite o relatório antes de salvar.");
     try {
+      // O "await" só funciona se o "async" estiver lá em cima
       await axios.post('https://api-sistema-ilpi.onrender.com/evolucoes', {
         residente_id: residenteSelecionado.id,
-        professional: novaNota.profissional,
+        profissional: novaNota.profissional,
         texto: novaNota.texto
       });
       setNovaNota({ ...novaNota, texto: '' });
-      abrirProntuario(residenteSelecionado); // Recarrega a lista após salvar
-      alert("Evolução registrada!");
+      abrirProntuario(residenteSelecionado);
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar no banco");
