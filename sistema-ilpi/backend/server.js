@@ -1,20 +1,21 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-app.use(cors({
-    origin: 'https://sistema-ilpi-app.onrender.com' // Sua URL do frontend
-}));
 
-const app = express();
-app.use(cors());
+const app = express(); // 1. Primeiro criamos o app
+
+// 2. Configuramos o CORS corretamente
+app.use(cors({
+    origin: 'https://sistema-ilpi-app.onrender.com'
+}));
 app.use(express.json());
 
+// 3. Conexão com o Banco de Dados (USANDO A VARIÁVEL DO RENDER)
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'ilpi_db',
-  password: 'admin123', 
-  port: 5432,
+  connectionString: process.env.DATABASE_URL, // Isso pega o link que colamos no Render
+  ssl: {
+    rejectUnauthorized: false // Necessário para conexões externas no Render
+  }
 });
 
 // LISTAR
@@ -41,7 +42,7 @@ app.post('/residentes', async (req, res) => {
   } catch (err) { res.status(500).json(err); }
 });
 
-// EDITAR (NOVA)
+// EDITAR
 app.put('/residentes/:id', async (req, res) => {
   const { id } = req.params;
   const { nome, nascimento, admissao, emergencia, cep, endereco, numero, anotacoes } = req.body;
@@ -54,7 +55,7 @@ app.put('/residentes/:id', async (req, res) => {
   } catch (err) { res.status(500).json(err); }
 });
 
-// EXCLUIR (NOVA)
+// EXCLUIR
 app.delete('/residentes/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -63,7 +64,7 @@ app.delete('/residentes/:id', async (req, res) => {
   } catch (err) { res.status(500).json(err); }
 });
 
-// Rota para BUSCAR o histórico de um residente
+// Rota para BUSCAR o histórico
 app.get('/evolucoes/:residenteId', async (req, res) => {
     try {
         const { residenteId } = req.params;
@@ -78,7 +79,7 @@ app.get('/evolucoes/:residenteId', async (req, res) => {
     }
 });
 
-// Rota para SALVAR uma nova evolução
+// Rota para SALVAR evolução
 app.post('/evolucoes', async (req, res) => {
     try {
         const { residente_id, profissional, texto } = req.body;
@@ -93,4 +94,5 @@ app.post('/evolucoes', async (req, res) => {
     }
 });
 
-app.listen(3001, () => console.log("Backend rodando na porta 3001"));
+const PORT = process.env.PORT || 3001; // Render define a porta sozinho
+app.listen(PORT, () => console.log(`Backend rodando na porta ${PORT}`));
