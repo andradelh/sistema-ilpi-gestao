@@ -94,5 +94,31 @@ app.post('/evolucoes', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3001; // Render define a porta sozinho
-app.listen(PORT, () => console.log(`Backend rodando na porta ${PORT}`));
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+// FUNÇÃO PARA CRIAR TABELA AUTOMATICAMENTE
+const initDb = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS residentes (
+        id SERIAL PRIMARY KEY,
+        nome VARCHAR(255) NOT NULL,
+        data_nascimento DATE,
+        data_admissao DATE,
+        contato_emergencia VARCHAR(255),
+        cep VARCHAR(10),
+        endereco_rua VARCHAR(255),
+        numero_casa VARCHAR(50),
+        anotacoes TEXT
+      );
+    `);
+    console.log("✅ Tabela 'residentes' verificada/criada com sucesso!");
+  } catch (err) {
+    console.error("❌ Erro ao criar tabela:", err);
+  }
+};
+
+initDb(); // Executa a criação ao iniciar
