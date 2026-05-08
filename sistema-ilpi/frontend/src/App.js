@@ -77,7 +77,7 @@ function App() {
 
   const deletar = async (id) => {
     if (window.confirm("Deseja realmente excluir?")) {
-      await axios.delete(`https://api-sistema-ilpi.onrender.com/residentes/${id}`);
+      await axios.delete(`https://api-sistema-ilpi.onrender.com/residentes/${id}`)
       carregarDados();
     }
   };
@@ -100,7 +100,7 @@ function App() {
   const abrirProntuario = async (residente) => {
     setResidenteSelecionado(residente);
     try {
-      const res = await axios.get(`https://api-sistema-ilpi.onrender.com/evolucoes/${residente.id}`);
+      const res = await axios.get(`https://api-sistema-ilpi.onrender.com/residentes/${residente.id}`);
       setHistorico(res.data);
     } catch (err) {
       console.error("Erro ao carregar histórico");
