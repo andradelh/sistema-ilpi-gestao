@@ -1,0 +1,13 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Variáveis sensíveis (onde estão suas senhas de banco)
+.env
+
+# Pastas de build do front
+dist/
+build/
+
+# Arquivos do próprio VS Code
+.vscode/
